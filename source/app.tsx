@@ -1,5 +1,7 @@
-import { Box, Text } from 'ink';
+import { Box, Spacer, Text } from 'ink';
 import React, { useState } from 'react';
+import AddMusicPage from './pages/add-music.js';
+import ArtistListPage from './pages/artist-list.js';
 import MainPage from './pages/main.js';
 
 const App: React.FC = () => {
@@ -10,9 +12,12 @@ const App: React.FC = () => {
   };
 
   return (
-    <Box borderStyle="single" paddingX={1}>
+    <Box flexDirection="column" padding={1}>
       {page === 'main' && <MainPage router={router} />}
-      {page === 'artist_list' && <Text>d</Text>}
+      {page === 'artist_list' && <ArtistListPage router={router} />}
+      {page === 'add_music' && <AddMusicPage router={router} />}
+      {page === 'exit' && <Text>App closed</Text>}
+      <Spacer />
     </Box>
   );
 };

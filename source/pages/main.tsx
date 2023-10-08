@@ -9,15 +9,17 @@ interface Props {
 const MainPage: React.FC<Props> = ({ router }) => {
   const handleSelect = (item: SelectItem) => {
     if (item.value === 'artist_list') router('artist_list');
+    if (item.value === 'exit') router('exit');
   };
 
   const menuItems: SelectItem[] = [
     { label: 'Artist List', value: 'artist_list' },
     { label: 'Music List', value: 'music_list' },
+    { label: 'Exit', value: 'exit' },
   ];
 
   return (
-    <Box flexDirection="column">
+    <Box flexDirection="column" gap={1}>
       <Text bold color={'yellow'}>
         Twinkle
       </Text>
