@@ -7,15 +7,15 @@ const dataFolder = 'data';
 class TwinkleManager {
   public static createTwinkle(artist: Artist, title: string): void {
     const id = crypto.randomBytes(4).toString('hex');
-    const fileName = `${artist.id}.${id}.twk`;
 
     const twinkle: Twinkle = {
       id,
       artist,
       music: title,
+      sessions: [],
     };
 
-    fs.writeFile(path.join(dataFolder, fileName), JSON.stringify(twinkle));
+    TwinkleManager.save(twinkle);
   }
 
   public static async getTwinkleById(id: string): Promise<Twinkle | null> {
@@ -45,6 +45,30 @@ class TwinkleManager {
     }
 
     return result;
+  }
+
+  public static async addSession(
+    twinkle: Twinkle,
+    date: string,
+    program: Program
+  ): Promise<Twinkle> {
+    const id = crypto.randomBytes(4).toString('hex');
+    twinkle.sessions.push({ id, date, program });
+
+    await TwinkleManager.save(twinkle);
+    return twinkle;
+  }
+
+  public static async removeSession(twinkle: Twinkle, id: string): Promise<Twinkle> {
+    twinkle.sessions = twinkle.sessions.filter(item => item.id !== id);
+
+    await TwinkleManager.save(twinkle);
+    return twinkle;
+  }
+
+  private static async save(twinkle: Twinkle): Promise<void> {
+    const fileName = `${twinkle.artist.id}.${twinkle.id}.twk`;
+    await fs.writeFile(path.join(dataFolder, fileName), JSON.stringify(twinkle));
   }
 }
 

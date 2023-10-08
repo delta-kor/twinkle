@@ -1,8 +1,10 @@
 import { Box, Spacer, Text } from 'ink';
 import React, { useState } from 'react';
 import AddMusicPage from './pages/add-music.js';
+import AddSessionPage from './pages/add-session.js';
 import ArtistListPage from './pages/artist-list.js';
 import MainPage from './pages/main.js';
+import RemoveSessionPage from './pages/remove-session.js';
 import TwinkleListPage from './pages/twinkle-list.js';
 import TwinklePage from './pages/twinkle.js';
 
@@ -22,6 +24,8 @@ const App: React.FC = () => {
       {page === 'add_music' && <AddMusicPage router={router} />}
       {page === 'twinkle_list' && <TwinkleListPage router={router} />}
       {page === 'twinkle' && <TwinklePage router={router} state={pageState} />}
+      {page === 'add_session' && <AddSessionPage router={router} state={pageState} />}
+      {page === 'remove_session' && <RemoveSessionPage router={router} state={pageState} />}
       {page === 'exit' && <Text>App closed</Text>}
       <Spacer />
     </Box>

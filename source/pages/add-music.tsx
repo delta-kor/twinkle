@@ -61,39 +61,43 @@ const AddMusicPage: React.FC<Props> = ({ router }) => {
         Add Music | Twinkle
       </Text>
 
-      <TaskList>
-        <Task
-          label={`Artist ${artist ? `> ${artist.name}` : ''}`}
-          state={getState(PageState.ArtistInput)}
-          spinner={spinners.line}
-        />
-        <Task
-          label={`Music Title ${musicTitle ? `> ${musicTitle}` : ''}`}
-          state={getState(PageState.MusicTitleInput)}
-          spinner={spinners.line}
-        />
-      </TaskList>
-
-      {pageState === PageState.ArtistInput && (
-        <Box flexDirection="column">
-          <Text color={'yellow'}>Select artist</Text>
-          <SelectInput items={menuItems} onSelect={handleArtistSelect} />
+      <Box gap={2}>
+        <Box minWidth={24}>
+          <TaskList>
+            <Task
+              label={`Artist ${artist ? `> ${artist.name}` : ''}`}
+              state={getState(PageState.ArtistInput)}
+              spinner={spinners.line}
+            />
+            <Task
+              label={`Music Title ${musicTitle ? `> ${musicTitle}` : ''}`}
+              state={getState(PageState.MusicTitleInput)}
+              spinner={spinners.line}
+            />
+          </TaskList>
         </Box>
-      )}
 
-      {pageState === PageState.MusicTitleInput && (
-        <Box flexDirection="column">
-          <Text color={'yellow'}>Enter music title</Text>
-          <UncontrolledTextInput onSubmit={handleMusicTitleInput} />
-        </Box>
-      )}
+        {pageState === PageState.ArtistInput && (
+          <Box flexDirection="column">
+            <Text color={'yellow'}>Select artist</Text>
+            <SelectInput items={menuItems} onSelect={handleArtistSelect} />
+          </Box>
+        )}
 
-      {pageState === PageState.Proceed && (
-        <Box flexDirection="column">
-          <Text color={'blue'}>Data saved</Text>
-          <Text color={'gray'}>Press any key to continue...</Text>
-        </Box>
-      )}
+        {pageState === PageState.MusicTitleInput && (
+          <Box flexDirection="column">
+            <Text color={'yellow'}>Enter music title</Text>
+            <UncontrolledTextInput onSubmit={handleMusicTitleInput} />
+          </Box>
+        )}
+
+        {pageState === PageState.Proceed && (
+          <Box flexDirection="column">
+            <Text color={'blue'}>Data saved</Text>
+            <Text color={'gray'}>Press any key to continue...</Text>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };

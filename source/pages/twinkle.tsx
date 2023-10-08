@@ -1,4 +1,5 @@
 import { Box, Text } from 'ink';
+import SelectInput from 'ink-select-input';
 import React, { useEffect, useState } from 'react';
 import TwinkleManager from '../services/twinkle.js';
 
@@ -12,17 +13,29 @@ interface PageState {
 }
 
 const TwinklePage: React.FC<Props> = ({ router, state }) => {
-  const twinkleId = state.id;
+  const twinkleId = state?.id;
 
   const [twinkle, setTwinkle] = useState<Twinkle | null>(null);
 
   useEffect(() => {
     loadTwinkle();
-  });
+  }, []);
 
   const loadTwinkle = async () => {
     const twinkle = await TwinkleManager.getTwinkleById(twinkleId);
     setTwinkle(twinkle);
+  };
+
+  const selectItems: SelectItem[] = [
+    { label: '- Add session', value: 'add_session' },
+    { label: '- Remove session', value: 'remove_session' },
+    { label: '> Cancel', value: 'cancel' },
+  ];
+
+  const handleSelect = (item: SelectItem) => {
+    if (item.value === 'cancel') return router('twinkle_list');
+    if (item.value === 'add_session') return router('add_session', { twinkle });
+    if (item.value === 'remove_session') return router('remove_session', { twinkle });
   };
 
   if (!twinkle)
@@ -88,7 +101,17 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
           </Box>
           <Text>{twinkle.music}</Text>
         </Box>
+        <Box>
+          <Box width={14}>
+            <Text bold color={'gray'}>
+              Sessions
+            </Text>
+          </Box>
+          <Text>{twinkle.sessions.length} item(s)</Text>
+        </Box>
       </Box>
+
+      <SelectInput items={selectItems} onSelect={handleSelect} />
     </Box>
   );
 };
