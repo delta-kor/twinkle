@@ -18,6 +18,20 @@ class TwinkleManager {
     fs.writeFile(path.join(dataFolder, fileName), JSON.stringify(twinkle));
   }
 
+  public static async getTwinkleById(id: string): Promise<Twinkle | null> {
+    const list = await fs.readdir(dataFolder);
+    const filteredList = list.filter(item => item.endsWith('twk'));
+
+    const twinkleFile = filteredList.find(item => item.includes(id));
+    if (!twinkleFile) return null;
+
+    const file = await fs.readFile(path.join(dataFolder, twinkleFile));
+    const json = file.toString();
+    const data = JSON.parse(json);
+
+    return data;
+  }
+
   public static async getTwinkleList(): Promise<Twinkle[]> {
     const list = await fs.readdir(dataFolder);
     const filteredList = list.filter(item => item.endsWith('twk'));

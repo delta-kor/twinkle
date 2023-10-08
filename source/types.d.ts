@@ -1,5 +1,5 @@
-type PageName = 'main' | 'exit' | 'artist_list' | 'add_music' | 'twinkle_list';
-type Router = (page: PageName) => void;
+type PageName = 'main' | 'exit' | 'artist_list' | 'add_music' | 'twinkle_list' | 'twinkle';
+type Router = (page: PageName, state?: any) => void;
 
 interface SelectItem {
   label: string;
