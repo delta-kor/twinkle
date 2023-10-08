@@ -1,4 +1,4 @@
-type PageName = 'main' | 'exit' | 'artist_list' | 'add_music';
+type PageName = 'main' | 'exit' | 'artist_list' | 'add_music' | 'twinkle_list';
 type Router = (page: PageName) => void;
 
 interface SelectItem {

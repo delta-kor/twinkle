@@ -14,8 +14,8 @@ const MainPage: React.FC<Props> = ({ router }) => {
   const menuItems: SelectItem[] = [
     { label: '- Artist List', value: 'artist_list' },
     { label: '- Add Music', value: 'add_music' },
-    { label: '- Music List', value: 'music_list' },
-    { label: '- Exit', value: 'exit' },
+    { label: '- Twinkle List', value: 'twinkle_list' },
+    { label: '> Exit', value: 'exit' },
   ];
 
   return (

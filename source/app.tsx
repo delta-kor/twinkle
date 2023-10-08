@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import AddMusicPage from './pages/add-music.js';
 import ArtistListPage from './pages/artist-list.js';
 import MainPage from './pages/main.js';
+import TwinkleListPage from './pages/twinkle-list.js';
 
 const App: React.FC = () => {
   const [page, setPage] = useState<PageName>('main');
@@ -16,6 +17,7 @@ const App: React.FC = () => {
       {page === 'main' && <MainPage router={router} />}
       {page === 'artist_list' && <ArtistListPage router={router} />}
       {page === 'add_music' && <AddMusicPage router={router} />}
+      {page === 'twinkle_list' && <TwinkleListPage router={router} />}
       {page === 'exit' && <Text>App closed</Text>}
       <Spacer />
     </Box>
