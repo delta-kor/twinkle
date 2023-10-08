@@ -8,14 +8,14 @@ interface Props {
 
 const MainPage: React.FC<Props> = ({ router }) => {
   const handleSelect = (item: SelectItem) => {
-    if (item.value === 'artist_list') router('artist_list');
-    if (item.value === 'exit') router('exit');
+    router(item.value as PageName);
   };
 
   const menuItems: SelectItem[] = [
-    { label: 'Artist List', value: 'artist_list' },
-    { label: 'Music List', value: 'music_list' },
-    { label: 'Exit', value: 'exit' },
+    { label: '- Artist List', value: 'artist_list' },
+    { label: '- Add Music', value: 'add_music' },
+    { label: '- Music List', value: 'music_list' },
+    { label: '- Exit', value: 'exit' },
   ];
 
   return (

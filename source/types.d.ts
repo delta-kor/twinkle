@@ -24,3 +24,9 @@ interface GroupArtist extends ArtistBase {
 interface SoloArtist extends ArtistBase {
   type: 'solo';
 }
+
+interface Twinkle {
+  id: string;
+  artist: Artist;
+  music: string;
+}

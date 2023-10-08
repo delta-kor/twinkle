@@ -5,12 +5,21 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  cli-spinners:
+    specifier: ^2.9.1
+    version: 2.9.1
   ink:
     specifier: ^4.1.0
     version: 4.1.0(@types/react@18.0.32)(react@18.2.0)
   ink-select-input:
     specifier: ^5.0.0
     version: 5.0.0(ink@4.1.0)(react@18.2.0)
+  ink-task-list:
+    specifier: ^2.0.0
+    version: 2.0.0(ink@4.1.0)(react@18.2.0)
+  ink-text-input:
+    specifier: ^5.0.1
+    version: 5.0.1(ink@4.1.0)(react@18.2.0)
   meow:
     specifier: ^11.0.0
     version: 11.0.0
@@ -1035,6 +1044,11 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dependencies:
       restore-cursor: 4.0.0
+    dev: false
+
+  /cli-spinners@2.9.1:
+    resolution: {integrity: sha512-jHgecW0pxkonBJdrKsqxgRX9AcG+u/5k0Q7WPDfi8AogLAdwxEkyYYNWwZ5GvVFoFx2uiY1eNcSK00fh+1+FyQ==}
+    engines: {node: '>=6'}
     dev: false
 
   /cli-truncate@3.1.0:
@@ -2269,6 +2283,16 @@ packages:
       react: 18.2.0
     dev: false
 
+  /ink-task-list@2.0.0(ink@4.1.0)(react@18.2.0):
+    resolution: {integrity: sha512-+WadfalLGUrYT/5D4cHeShN73t5urEsI5VOwFYw3qNWdOL+GQVTLbTS0tCZkzIcBcL+dfZcQAtuoW56ZBZV+Bg==}
+    peerDependencies:
+      ink: '>=3.0.0'
+      react: '>=16.8.0'
+    dependencies:
+      ink: 4.1.0(@types/react@18.0.32)(react@18.2.0)
+      react: 18.2.0
+    dev: false
+
   /ink-testing-library@3.0.0(@types/react@18.0.32):
     resolution: {integrity: sha512-ItyyoOmcm6yftb7c5mZI2HU22BWzue8PBbO3DStmY8B9xaqfKr7QJONiWOXcwVsOk/6HuVQ0v7N5xhPaR3jycA==}
     engines: {node: '>=14.16'}
@@ -2280,6 +2304,19 @@ packages:
     dependencies:
       '@types/react': 18.0.32
     dev: true
+
+  /ink-text-input@5.0.1(ink@4.1.0)(react@18.2.0):
+    resolution: {integrity: sha512-crnsYJalG4EhneOFnr/q+Kzw1RgmXI2KsBaLFE6mpiIKxAtJLUnvygOF2IUKO8z4nwkSkveGRBMd81RoYdRSag==}
+    engines: {node: '>=14.16'}
+    peerDependencies:
+      ink: ^4.0.0
+      react: ^18.0.0
+    dependencies:
+      chalk: 5.2.0
+      ink: 4.1.0(@types/react@18.0.32)(react@18.2.0)
+      react: 18.2.0
+      type-fest: 3.13.1
+    dev: false
 
   /ink@4.1.0(@types/react@18.0.32)(react@18.2.0):
     resolution: {integrity: sha512-cMGAHZN7aKSO3ZpOrIVE3nO95quV/Jx8MwO3TC5SR3lDAg+i16MCqKtzACnfd4mDYRN6AiZHh6eytrcxGMGsgA==}
