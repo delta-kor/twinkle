@@ -1,12 +1,12 @@
 import { Box, Spacer, Text } from 'ink';
 import React, { useState } from 'react';
-import AddMusicPage from './pages/add-music.js';
-import AddSessionPage from './pages/add-session.js';
-import ArtistListPage from './pages/artist-list.js';
+import AddMusicPage from './pages/AddMusic.js';
+import AddSessionPage from './pages/AddSession.js';
+import ArtistListPage from './pages/ArtistList.js';
+import RemoveSessionPage from './pages/RemoveSession.js';
+import TwinklePage from './pages/Twinkle.js';
+import TwinkleListPage from './pages/TwinkleList.js';
 import MainPage from './pages/main.js';
-import RemoveSessionPage from './pages/remove-session.js';
-import TwinkleListPage from './pages/twinkle-list.js';
-import TwinklePage from './pages/twinkle.js';
 
 const App: React.FC = () => {
   const [page, setPage] = useState<PageName>('main');
