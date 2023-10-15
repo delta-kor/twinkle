@@ -15,6 +15,7 @@
     "dist"
   ],
   "dependencies": {
+    "axios": "^1.5.1",
     "cli-spinners": "^2.9.1",
     "ink": "^4.1.0",
     "ink-select-input": "^5.0.0",

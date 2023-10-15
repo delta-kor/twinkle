@@ -1,6 +1,8 @@
 import crypto from 'crypto';
 import { promises as fs } from 'fs';
 import path from 'path';
+import Searcher from './searcher.js';
+import Youtube from './youtube.js';
 
 const dataFolder = 'data';
 
@@ -53,7 +55,7 @@ class TwinkleManager {
     program: Program
   ): Promise<Twinkle> {
     const id = crypto.randomBytes(4).toString('hex');
-    twinkle.sessions.push({ id, date, program });
+    twinkle.sessions.push({ id, date, program, segments: [] });
 
     await TwinkleManager.save(twinkle);
     return twinkle;
@@ -66,9 +68,24 @@ class TwinkleManager {
     return twinkle;
   }
 
+  public static async loadSessions(twinkle: Twinkle, setTwinkle: any): Promise<Twinkle> {
+    const youtube = new Youtube();
+    const searcher = new Searcher(youtube, twinkle, setTwinkle);
+    await youtube.init();
+    await searcher.search();
+    await TwinkleManager.save(twinkle);
+
+    return twinkle;
+  }
+
   private static async save(twinkle: Twinkle): Promise<void> {
     const fileName = `${twinkle.artist.id}.${twinkle.id}.twk`;
-    await fs.writeFile(path.join(dataFolder, fileName), JSON.stringify(twinkle));
+    await fs.writeFile(path.join(dataFolder, fileName), JSON.stringify(twinkle, null, 2));
+  }
+
+  public static async dumpUntaggedVideo(title: string): Promise<void> {
+    const fileName = `untagged.twkdump`;
+    await fs.appendFile(path.join(dataFolder, fileName), title);
   }
 }
 

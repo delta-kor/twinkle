@@ -34,12 +34,49 @@ interface SoloArtist extends ArtistBase {
   type: 'solo';
 }
 
+interface YoutubeVideo {
+  id: string;
+  title: string;
+  channel: string;
+  tag: null | VideoTag;
+}
+
+type VideoTag =
+  | 'main'
+  | 'full'
+  | '1take'
+  | 'tower'
+  | 'side'
+  | 'live'
+  | 'rehearsal'
+  | 'single_full'
+  | 'single_face';
+
+type SegmentType = 'member' | 'full';
+
+type Segment = MemberSegment | FullSegment;
+
+interface SegmentBase {
+  type: SegmentType;
+  videos: YoutubeVideo[];
+}
+
+interface MemberSegment extends SegmentBase {
+  type: 'member';
+  member: string;
+}
+
+interface FullSegment extends SegmentBase {
+  type: 'full';
+}
+
 type Program = 'mcountdown' | 'musicbank' | 'musiccore' | 'inkigayo' | 'theshow' | 'showchampion';
 
 interface Session {
   id: string;
   program: Program;
   date: string;
+  segments: Segment[];
 }
 
 interface Twinkle {
