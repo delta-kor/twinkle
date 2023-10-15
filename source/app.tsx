@@ -1,5 +1,6 @@
 import { Box, Spacer, Text } from 'ink';
 import React, { useState } from 'react';
+import AddGuidePage from './pages/AddGuide.js';
 import AddMusicPage from './pages/AddMusic.js';
 import AddSessionPage from './pages/AddSession.js';
 import ArtistListPage from './pages/ArtistList.js';
@@ -26,6 +27,7 @@ const App: React.FC = () => {
       {page === 'twinkle' && <TwinklePage router={router} state={pageState} />}
       {page === 'add_session' && <AddSessionPage router={router} state={pageState} />}
       {page === 'remove_session' && <RemoveSessionPage router={router} state={pageState} />}
+      {page === 'add_guide' && <AddGuidePage router={router} state={pageState} />}
       {page === 'exit' && <Text>App closed</Text>}
       <Spacer />
     </Box>

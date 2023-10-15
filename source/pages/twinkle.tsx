@@ -33,6 +33,7 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
     { label: '- Remove session', value: 'remove_session' },
     { label: '- Load sessions', value: 'load_sessions' },
     { label: '- Reset sessions', value: 'reset_sessions' },
+    { label: '- Add guide', value: 'add_guide' },
     { label: '> Cancel', value: 'cancel' },
   ];
 
@@ -40,6 +41,7 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
     if (item.value === 'cancel') return router('twinkle_list');
     if (item.value === 'add_session') return router('add_session', { twinkle });
     if (item.value === 'remove_session') return router('remove_session', { twinkle });
+
     if (item.value === 'load_sessions') {
       setLoading(true);
       const updatedTwinkle = await TwinkleManager.loadSessions(twinkle!, (twinkle: Twinkle) =>
@@ -47,11 +49,16 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
       );
       setTwinkle({ ...updatedTwinkle });
       setLoading(false);
+      return true;
     }
+
     if (item.value === 'reset_sessions') {
       const updatedTwinkle = await TwinkleManager.resetSessions(twinkle!);
       setTwinkle({ ...updatedTwinkle });
+      return true;
     }
+
+    if (item.value === 'add_guide') return router('add_guide', { twinkle });
   };
 
   if (!twinkle)
@@ -125,6 +132,14 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
               </Text>
             </Box>
             <Text>{twinkle.sessions.length} item(s)</Text>
+          </Box>
+          <Box>
+            <Box width={14}>
+              <Text bold color={'gray'}>
+                Guide
+              </Text>
+            </Box>
+            <Text>{twinkle.guideId || 'Unspecified'}</Text>
           </Box>
         </Box>
         <Box flexDirection="column">

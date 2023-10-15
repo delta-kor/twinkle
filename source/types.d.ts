@@ -6,7 +6,8 @@ type PageName =
   | 'twinkle_list'
   | 'twinkle'
   | 'add_session'
-  | 'remove_session';
+  | 'remove_session'
+  | 'add_guide';
 
 type Router = (page: PageName, state?: any) => void;
 
@@ -85,4 +86,5 @@ interface Twinkle {
   artist: Artist;
   music: string;
   sessions: Session[];
+  guideId: string | null;
 }

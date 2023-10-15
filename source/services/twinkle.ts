@@ -1,10 +1,12 @@
 import crypto from 'crypto';
-import { promises as fs } from 'fs';
+import file, { promises as fs } from 'fs';
 import path from 'path';
+import ytdl from 'ytdl-core';
 import Searcher from './searcher.js';
 import Youtube from './youtube.js';
 
 const dataFolder = 'data';
+const audioFolder = path.join(dataFolder, 'audio');
 
 class TwinkleManager {
   public static createTwinkle(artist: Artist, title: string): void {
@@ -15,6 +17,7 @@ class TwinkleManager {
       artist,
       music: title,
       sessions: [],
+      guideId: null,
     };
 
     TwinkleManager.save(twinkle);
@@ -87,9 +90,27 @@ class TwinkleManager {
     return twinkle;
   }
 
+  public static async addGuide(twinkle: Twinkle, videoId: string): Promise<Twinkle> {
+    twinkle.guideId = videoId;
+    await TwinkleManager.save(twinkle);
+    await TwinkleManager.download(videoId);
+
+    return twinkle;
+  }
+
   private static async save(twinkle: Twinkle): Promise<void> {
     const fileName = `${twinkle.artist.id}.${twinkle.id}.twk`;
     await fs.writeFile(path.join(dataFolder, fileName), JSON.stringify(twinkle, null, 2));
+  }
+
+  private static async download(videoId: string): Promise<void> {
+    const fileName = `${videoId}.mp3`;
+    return new Promise<void>(async resolve => {
+      ytdl(videoId, { quality: 'lowestaudio', filter: 'audioonly' })
+        .on('error', () => resolve())
+        .pipe(file.createWriteStream(path.join(audioFolder, fileName)))
+        .on('close', () => resolve());
+    });
   }
 
   public static async dumpUntaggedVideo(title: string): Promise<void> {
