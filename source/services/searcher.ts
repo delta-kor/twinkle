@@ -1,8 +1,21 @@
 import Program from './program.js';
 import Tagger from './tagger.js';
+import TwinkleManager from './twinkle.js';
 import Youtube from './youtube.js';
 
 export type SearcherUpdateHandler = (twinkle: Twinkle) => void;
+
+const TagOrder: VideoTag[] = [
+  'main',
+  'full',
+  '1take',
+  'tower',
+  'side',
+  'live',
+  'rehearsal',
+  'single_full',
+  'single_face',
+];
 
 export default class Searcher {
   private readonly youtube: Youtube;
@@ -62,9 +75,15 @@ export default class Searcher {
 
     for (const video of videos) {
       video.tag = Tagger.tagVideo(video, program, !member);
+      if (video.tag === null) {
+        await TwinkleManager.dumpUntaggedVideo(video.title);
+      }
     }
 
-    return videos;
+    const taggedVideos = videos.filter(video => video.tag);
+    taggedVideos.sort((a, b) => TagOrder.indexOf(a.tag!) - TagOrder.indexOf(b.tag!));
+
+    return taggedVideos;
   }
 
   private async searchSession(session: Session): Promise<void> {

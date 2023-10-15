@@ -1,6 +1,7 @@
 import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import React, { useEffect, useState } from 'react';
+import Tag from '../components/tag.js';
 import TwinkleManager from '../services/twinkle.js';
 
 interface Props {
@@ -121,24 +122,20 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
             <Text>{twinkle.sessions.length} item(s)</Text>
           </Box>
         </Box>
-        <Box flexDirection="column">
+        <Box flexDirection="column" gap={1}>
           {twinkle.sessions.map(session => (
-            <Box key={session.id} flexDirection="column">
+            <Box key={session.id}>
               <Box gap={1}>
-                <Text>{session.date}</Text>
+                <Text color={'yellow'}>{session.date}</Text>
                 <Text color={'blue'}>{session.program}</Text>
               </Box>
               <Box gap={1}>
                 {session.segments.map((segment, index) => (
-                  <Box key={index} flexDirection="column">
-                    <Text color={'yellow'}>
-                      {segment.type === 'full' ? 'full' : segment.member}
-                    </Text>
-                    <Box flexDirection="column">
+                  <Box key={index} gap={1} minWidth={16}>
+                    <Text>{segment.type === 'full' ? '전체' : segment.member}</Text>
+                    <Box gap={1}>
                       {segment.videos.map(video => (
-                        <Box key={video.id}>
-                          <Text>{video.tag}</Text>
-                        </Box>
+                        <Tag key={video.id} tag={video.tag} />
                       ))}
                     </Box>
                   </Box>

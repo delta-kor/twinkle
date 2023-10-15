@@ -85,7 +85,17 @@ class TwinkleManager {
 
   public static async dumpUntaggedVideo(title: string): Promise<void> {
     const fileName = `untagged.twkdump`;
-    await fs.appendFile(path.join(dataFolder, fileName), title);
+    const list: string[] = [];
+
+    try {
+      const file = await fs.readFile(path.join(dataFolder, fileName));
+      list.push(...file.toString().split('\n'));
+    } catch (e) {}
+
+    if (list.includes(title)) return;
+    list.push(title);
+
+    await fs.writeFile(path.join(dataFolder, fileName), list.join('\n'));
   }
 }
 
