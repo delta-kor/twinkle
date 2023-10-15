@@ -48,7 +48,7 @@ export default class Searcher {
     if (member)
       videos = videos
         .filter(item => item.title.includes(member!))
-        .filter(video => video.channel === program.channelId);
+        .filter(video => video.channel === program.mainId || video.channel === program.channelId);
     if (exclude)
       videos = videos
         .filter(item => !exclude!.map(video => video.id).includes(item.id))

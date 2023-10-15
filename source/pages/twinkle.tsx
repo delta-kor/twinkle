@@ -64,7 +64,7 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
     );
 
   return (
-    <Box alignItems="flex-end">
+    <Box>
       <Box flexDirection="column" gap={1} flexGrow={1}>
         <Text bold color={'blue'}>
           Twinkle Info | Twinkle

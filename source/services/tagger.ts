@@ -13,6 +13,7 @@ export default class Tagger {
       if (title.startsWith('[mpd직캠')) return isGroup ? 'full' : 'single_full';
       if (title.startsWith('[입덕직캠') && !isGroup) return 'single_face';
       if (title.includes('#엠카운트다운ep') && isGroup) return 'main';
+      if (title.includes('KPOP TV Show') && isGroup) return 'main';
     }
 
     if (program.key === 'musicbank') {

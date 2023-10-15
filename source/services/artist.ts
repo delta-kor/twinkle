@@ -17,6 +17,25 @@ const Artists: Artist[] = [
     type: 'group',
     members: ['새롬', '하영', '지원', '지선', '서연', '채영', '나경', '지헌'],
   },
+  {
+    id: 'iz1',
+    name: 'IZ*ONE',
+    type: 'group',
+    members: [
+      '권은비',
+      '사쿠라',
+      '강혜원',
+      '최예나',
+      '이채연',
+      '김채원',
+      '김민주',
+      '나코',
+      '히토미',
+      '조유리',
+      '안유진',
+      '장원영',
+    ],
+  },
 ];
 
 export default Artists;
