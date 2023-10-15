@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Queue from '../decorators/queue.js';
 
 export interface YoutubeSearchResult {
   videos: YoutubeVideo[];
@@ -27,6 +28,7 @@ export default class Youtube {
     return this;
   }
 
+  @Queue()
   public async search(params: YoutubeSearchParams): Promise<YoutubeSearchResult> {
     const query = params.query;
     const requestContinuation = params.continuation;

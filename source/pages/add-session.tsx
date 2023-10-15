@@ -66,6 +66,10 @@ const AddSessionPage: React.FC<Props> = ({ router, state }) => {
   const menuItems: SelectItem[] = [
     { label: '- 엠카운트다운', value: 'mcountdown' },
     { label: '- 뮤직뱅크', value: 'musicbank' },
+    { label: '- 음악중심', value: 'musiccore' },
+    { label: '- 인기가요', value: 'inkigayo' },
+    { label: '- 더쇼', value: 'theshow' },
+    { label: '- 쇼챔피언', value: 'showchampion' },
   ];
   menuItems.push({ label: '> Cancel', value: 'cancel' });
 

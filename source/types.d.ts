@@ -44,6 +44,7 @@ interface YoutubeVideo {
 type VideoTag =
   | 'main'
   | 'full'
+  | 'full_hd'
   | '1take'
   | 'tower'
   | 'side'

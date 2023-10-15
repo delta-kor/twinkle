@@ -7,6 +7,7 @@ export type SearcherUpdateHandler = (twinkle: Twinkle) => void;
 
 const TagOrder: VideoTag[] = [
   'main',
+  'full_hd',
   'full',
   '1take',
   'tower',
@@ -92,25 +93,50 @@ export default class Searcher {
         ? this.twinkle.artist.members
         : [this.twinkle.artist.name];
 
+    const promises: any[] = [];
+
     for (const member of members) {
-      const videos = await this.searchSegment(session, member);
-      session.segments.push({ type: 'member', member, videos });
-      this.onUpdate(this.twinkle);
+      const promise = this.searchSegment(session, member).then(videos => {
+        session.segments
+          .find(segment => segment.type === 'member' && segment.member === member)
+          ?.videos.push(...videos);
+
+        this.onUpdate(this.twinkle);
+      });
+
+      promises.push(promise);
     }
+
+    await Promise.all(promises);
 
     const fullVideos = await this.searchSegment(
       session,
       null,
       session.segments.map(item => item.videos).flat()
     );
-    session.segments.push({ type: 'full', videos: fullVideos });
+    session.segments.find(segment => segment.type === 'full')?.videos.push(...fullVideos);
+
     this.onUpdate(this.twinkle);
   }
 
   public async search(): Promise<void> {
+    const members =
+      this.twinkle.artist.type === 'group'
+        ? this.twinkle.artist.members
+        : [this.twinkle.artist.name];
+
+    const promises: any[] = [];
+
     for (const session of this.twinkle.sessions) {
       if (session.segments.length > 0) continue;
-      await this.searchSession(session);
+
+      for (const member of members)
+        session.segments.push({ type: 'member', member: member, videos: [] });
+      session.segments.push({ type: 'full', videos: [] });
+
+      promises.push(this.searchSession(session));
     }
+
+    await Promise.all(promises);
   }
 }

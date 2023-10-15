@@ -32,6 +32,7 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
     { label: '- Add session', value: 'add_session' },
     { label: '- Remove session', value: 'remove_session' },
     { label: '- Load sessions', value: 'load_sessions' },
+    { label: '- Reset sessions', value: 'reset_sessions' },
     { label: '> Cancel', value: 'cancel' },
   ];
 
@@ -44,8 +45,12 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
       const updatedTwinkle = await TwinkleManager.loadSessions(twinkle!, (twinkle: Twinkle) =>
         setTwinkle({ ...twinkle })
       );
-      setTwinkle(updatedTwinkle);
+      setTwinkle({ ...updatedTwinkle });
       setLoading(false);
+    }
+    if (item.value === 'reset_sessions') {
+      const updatedTwinkle = await TwinkleManager.resetSessions(twinkle!);
+      setTwinkle({ ...updatedTwinkle });
     }
   };
 
@@ -122,14 +127,16 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
             <Text>{twinkle.sessions.length} item(s)</Text>
           </Box>
         </Box>
-        <Box flexDirection="column" gap={1}>
+        <Box flexDirection="column">
           {twinkle.sessions.map(session => (
-            <Box key={session.id}>
-              <Box gap={1}>
-                <Text color={'yellow'}>{session.date}</Text>
+            <Box key={session.id} gap={1}>
+              <Box minWidth={19} gap={1}>
+                <Box minWidth={6}>
+                  <Text color={'yellow'}>{session.date}</Text>
+                </Box>
                 <Text color={'blue'}>{session.program}</Text>
               </Box>
-              <Box gap={1}>
+              <Box columnGap={1} flexWrap="wrap">
                 {session.segments.map((segment, index) => (
                   <Box key={index} gap={1} minWidth={16}>
                     <Text>{segment.type === 'full' ? '전체' : segment.member}</Text>

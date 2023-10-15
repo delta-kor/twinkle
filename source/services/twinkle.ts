@@ -78,6 +78,15 @@ class TwinkleManager {
     return twinkle;
   }
 
+  public static async resetSessions(twinkle: Twinkle): Promise<Twinkle> {
+    for (const session of twinkle.sessions) {
+      session.segments = [];
+    }
+    await TwinkleManager.save(twinkle);
+
+    return twinkle;
+  }
+
   private static async save(twinkle: Twinkle): Promise<void> {
     const fileName = `${twinkle.artist.id}.${twinkle.id}.twk`;
     await fs.writeFile(path.join(dataFolder, fileName), JSON.stringify(twinkle, null, 2));

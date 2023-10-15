@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "dist",
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+    "experimentalDecorators": true
   },
   "include": ["source"]
 }
