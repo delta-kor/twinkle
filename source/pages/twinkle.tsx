@@ -1,7 +1,7 @@
 import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import React, { useEffect, useState } from 'react';
-import Tag from '../components/tag.js';
+import Tag from '../components/Tag.js';
 import TwinkleManager from '../services/twinkle.js';
 
 interface Props {
@@ -34,6 +34,7 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
     { label: '- Load sessions', value: 'load_sessions' },
     { label: '- Reset sessions', value: 'reset_sessions' },
     { label: '- Add guide', value: 'add_guide' },
+    { label: '- Sync', value: 'sync' },
     { label: '> Cancel', value: 'cancel' },
   ];
 
@@ -59,6 +60,11 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
     }
 
     if (item.value === 'add_guide') return router('add_guide', { twinkle });
+    if (item.value === 'sync') {
+      const updatedTwinkle = await TwinkleManager.loadAudio(twinkle!, (twinkle: Twinkle) =>
+        setTwinkle({ ...twinkle })
+      );
+    }
   };
 
   if (!twinkle)

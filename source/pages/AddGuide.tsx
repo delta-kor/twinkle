@@ -13,12 +13,16 @@ interface RouterState {
 }
 
 const AddGuidePage: React.FC<Props> = ({ router, state }) => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState<string>(state.twinkle?.guideId || '');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (value: string) => {
     if (!value) router('twinkle', { id: state.twinkle.id });
 
+    setLoading(true);
     await TwinkleManager.addGuide(state.twinkle, value);
+    setLoading(false);
+
     router('twinkle', { id: state.twinkle.id });
   };
 
@@ -28,7 +32,13 @@ const AddGuidePage: React.FC<Props> = ({ router, state }) => {
         Add guide | Twinkle
       </Text>
 
-      <TextInput value={value} onChange={setValue} onSubmit={handleSubmit} />
+      {loading ? (
+        <Text bold color={'gray'}>
+          Downloading...
+        </Text>
+      ) : (
+        <TextInput value={value} onChange={setValue} onSubmit={handleSubmit} />
+      )}
     </Box>
   );
 };

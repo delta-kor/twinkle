@@ -40,6 +40,7 @@ interface YoutubeVideo {
   title: string;
   channel: string;
   tag: null | VideoTag;
+  delta?: number;
 }
 
 type VideoTag =

@@ -1,3 +1,4 @@
+import { exec } from 'child_process';
 import crypto from 'crypto';
 import file, { promises as fs } from 'fs';
 import path from 'path';
@@ -93,9 +94,20 @@ class TwinkleManager {
   public static async addGuide(twinkle: Twinkle, videoId: string): Promise<Twinkle> {
     twinkle.guideId = videoId;
     await TwinkleManager.save(twinkle);
-    await TwinkleManager.download(videoId);
+    await TwinkleManager.downloadAudio(videoId);
 
     return twinkle;
+  }
+
+  public static async loadAudio(twinkle: Twinkle, setTwinkle: any): Promise<void> {
+    for (const session of twinkle.sessions) {
+      for (const segment of session.segments) {
+        for (const video of segment.videos) {
+          const videoId = video.id;
+          await TwinkleManager.downloadAudio(videoId);
+        }
+      }
+    }
   }
 
   private static async save(twinkle: Twinkle): Promise<void> {
@@ -103,13 +115,39 @@ class TwinkleManager {
     await fs.writeFile(path.join(dataFolder, fileName), JSON.stringify(twinkle, null, 2));
   }
 
-  private static async download(videoId: string): Promise<void> {
+  private static async downloadAudio(videoId: string): Promise<boolean> {
+    const success = await TwinkleManager.extractAudio(videoId);
+    if (!success) return false;
+
     const fileName = `${videoId}.mp3`;
-    return new Promise<void>(async resolve => {
+    await TwinkleManager.wavifyAudio(videoId);
+    fs.unlink(path.join(audioFolder, fileName));
+
+    return true;
+  }
+
+  private static async extractAudio(videoId: string): Promise<boolean> {
+    const fileName = `${videoId}.mp3`;
+    return new Promise<boolean>(async resolve => {
       ytdl(videoId, { quality: 'lowestaudio', filter: 'audioonly' })
-        .on('error', () => resolve())
+        .on('error', () => resolve(false))
         .pipe(file.createWriteStream(path.join(audioFolder, fileName)))
-        .on('close', () => resolve());
+        .on('close', () => resolve(true));
+    });
+  }
+
+  private static async wavifyAudio(videoId: string): Promise<void> {
+    const fileName = `${videoId}.mp3`;
+    const waveName = `${videoId}.wav`;
+    const fileFullPath = path.join(path.resolve(), audioFolder, fileName);
+    const waveFullPath = path.join(path.resolve(), audioFolder, waveName);
+
+    return new Promise<void>(resolve => {
+      const shell = exec(
+        `${process.env['WAVER']} -y -i "${fileFullPath}" -acodec pcm_u8 -ar 15000 -ac 1 "${waveFullPath}"`
+      );
+
+      shell.stdout?.on('end', () => resolve());
     });
   }
 

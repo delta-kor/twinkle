@@ -4,10 +4,10 @@ import AddGuidePage from './pages/AddGuide.js';
 import AddMusicPage from './pages/AddMusic.js';
 import AddSessionPage from './pages/AddSession.js';
 import ArtistListPage from './pages/ArtistList.js';
+import MainPage from './pages/Main.js';
 import RemoveSessionPage from './pages/RemoveSession.js';
 import TwinklePage from './pages/Twinkle.js';
 import TwinkleListPage from './pages/TwinkleList.js';
-import MainPage from './pages/main.js';
 
 const App: React.FC = () => {
   const [page, setPage] = useState<PageName>('main');
