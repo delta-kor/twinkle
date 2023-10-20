@@ -1,10 +1,8 @@
-import { spawn } from 'child_process';
 import crypto from 'crypto';
 import ffmpeg from 'fluent-ffmpeg';
 import file, { promises as fs } from 'fs';
 import PQueue from 'p-queue';
 import path from 'path';
-import readline from 'readline';
 import shell from 'shelljs';
 import ytdl from 'ytdl-core';
 import Searcher from './searcher.js';
@@ -120,12 +118,14 @@ class TwinkleManager {
 
   public static async plotAudios(twinkle: Twinkle, setTwinkle: any): Promise<void> {
     return new Promise<void>(resolve => {
-      const shell = spawn('python', ['lib/plotter.py', '--id', twinkle.id]);
+      const process = shell.exec(`python lib/plotter.py --id ${twinkle.id}`, {
+        async: true,
+        silent: true,
+      });
 
-      const reader = readline.createInterface({ input: shell.stdout });
-      reader.on('line', (data: string) => {
-        if (data.startsWith('>')) {
-          const videoId = data.slice(1);
+      process.stdout?.on('data', data => {
+        if (data.trim().startsWith('>')) {
+          const videoId = data.trim().slice(1);
 
           const video = twinkle.sessions
             .map(session => session.segments)
@@ -140,7 +140,7 @@ class TwinkleManager {
         }
       });
 
-      shell.on('close', () => resolve());
+      process.on('close', () => resolve());
     });
   }
 
@@ -191,19 +191,6 @@ class TwinkleManager {
         .output(waveFullPath)
         .on('end', () => resolve())
         .run();
-    });
-
-    return new Promise<void>(resolve => {
-      const sh = shell.exec(
-        `${process.env['WAVER']} -y -i "${fileFullPath}" -acodec pcm_u8 -ar 15000 -ac 1 "${waveFullPath}"`,
-        { async: true, silent: true, windowsHide: true }
-      );
-
-      sh.stdout?.on('data', console.error);
-
-      sh.on('close', () => {
-        resolve();
-      });
     });
   }
 
