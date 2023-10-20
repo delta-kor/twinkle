@@ -77,7 +77,7 @@ export default class Youtube {
       if (overlays.find(item => item.thumbnailOverlayTimeStatusRenderer?.style === 'SHORTS'))
         continue;
 
-      videos.push({ id, title, channel, tag: null });
+      videos.push({ id, title, channel, tag: null, state: 'unloaded' });
     }
 
     return {

@@ -1,7 +1,11 @@
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 import crypto from 'crypto';
+import ffmpeg from 'fluent-ffmpeg';
 import file, { promises as fs } from 'fs';
+import PQueue from 'p-queue';
 import path from 'path';
+import readline from 'readline';
+import shell from 'shelljs';
 import ytdl from 'ytdl-core';
 import Searcher from './searcher.js';
 import Youtube from './youtube.js';
@@ -91,23 +95,53 @@ class TwinkleManager {
     return twinkle;
   }
 
-  public static async addGuide(twinkle: Twinkle, videoId: string): Promise<Twinkle> {
-    twinkle.guideId = videoId;
-    await TwinkleManager.save(twinkle);
-    await TwinkleManager.downloadAudio(videoId);
+  public static async loadAudios(twinkle: Twinkle, setTwinkle: any): Promise<void> {
+    const queue = new PQueue.default({ concurrency: 20, interval: 500 });
+    const promises: any[] = [];
 
-    return twinkle;
-  }
-
-  public static async loadAudio(twinkle: Twinkle, setTwinkle: any): Promise<void> {
     for (const session of twinkle.sessions) {
       for (const segment of session.segments) {
         for (const video of segment.videos) {
           const videoId = video.id;
-          await TwinkleManager.downloadAudio(videoId);
+          const task = async () => {
+            await TwinkleManager.downloadAudio(videoId, state => {
+              video.state = state;
+              setTwinkle(twinkle);
+            });
+            await TwinkleManager.save(twinkle);
+          };
+          promises.push(queue.add(task));
         }
       }
     }
+
+    await Promise.all(promises);
+  }
+
+  public static async plotAudios(twinkle: Twinkle, setTwinkle: any): Promise<void> {
+    return new Promise<void>(resolve => {
+      const shell = spawn('python', ['lib/plotter.py', '--id', twinkle.id]);
+
+      const reader = readline.createInterface({ input: shell.stdout });
+      reader.on('line', (data: string) => {
+        if (data.startsWith('>')) {
+          const videoId = data.slice(1);
+
+          const video = twinkle.sessions
+            .map(session => session.segments)
+            .flat()
+            .map(segment => segment.videos)
+            .flat()
+            .find(video => video.id === videoId);
+
+          if (video) video.state = 'plotted';
+          setTwinkle(twinkle);
+          TwinkleManager.save(twinkle);
+        }
+      });
+
+      shell.on('close', () => resolve());
+    });
   }
 
   private static async save(twinkle: Twinkle): Promise<void> {
@@ -115,13 +149,19 @@ class TwinkleManager {
     await fs.writeFile(path.join(dataFolder, fileName), JSON.stringify(twinkle, null, 2));
   }
 
-  private static async downloadAudio(videoId: string): Promise<boolean> {
+  private static async downloadAudio(
+    videoId: string,
+    callback: (state: VideoState) => void
+  ): Promise<boolean> {
+    callback('loading');
     const success = await TwinkleManager.extractAudio(videoId);
     if (!success) return false;
 
+    callback('waving');
     const fileName = `${videoId}.mp3`;
     await TwinkleManager.wavifyAudio(videoId);
-    fs.unlink(path.join(audioFolder, fileName));
+    await fs.unlink(path.join(audioFolder, fileName));
+    callback('loaded');
 
     return true;
   }
@@ -143,11 +183,27 @@ class TwinkleManager {
     const waveFullPath = path.join(path.resolve(), audioFolder, waveName);
 
     return new Promise<void>(resolve => {
-      const shell = exec(
-        `${process.env['WAVER']} -y -i "${fileFullPath}" -acodec pcm_u8 -ar 15000 -ac 1 "${waveFullPath}"`
+      ffmpeg(fileFullPath)
+        .audioCodec('pcm_u8')
+        .audioBitrate(15000)
+        .audioChannels(1)
+        .inputOption('-y')
+        .output(waveFullPath)
+        .on('end', () => resolve())
+        .run();
+    });
+
+    return new Promise<void>(resolve => {
+      const sh = shell.exec(
+        `${process.env['WAVER']} -y -i "${fileFullPath}" -acodec pcm_u8 -ar 15000 -ac 1 "${waveFullPath}"`,
+        { async: true, silent: true, windowsHide: true }
       );
 
-      shell.stdout?.on('end', () => resolve());
+      sh.stdout?.on('data', console.error);
+
+      sh.on('close', () => {
+        resolve();
+      });
     });
   }
 

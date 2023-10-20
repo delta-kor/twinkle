@@ -41,6 +41,7 @@ interface YoutubeVideo {
   channel: string;
   tag: null | VideoTag;
   delta?: number;
+  state: VideoState;
 }
 
 type VideoTag =
@@ -54,6 +55,8 @@ type VideoTag =
   | 'rehearsal'
   | 'single_full'
   | 'single_face';
+
+type VideoState = 'unloaded' | 'loading' | 'waving' | 'loaded' | 'plotted';
 
 type SegmentType = 'member' | 'full';
 

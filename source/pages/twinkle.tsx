@@ -33,8 +33,8 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
     { label: '- Remove session', value: 'remove_session' },
     { label: '- Load sessions', value: 'load_sessions' },
     { label: '- Reset sessions', value: 'reset_sessions' },
-    { label: '- Add guide', value: 'add_guide' },
-    { label: '- Sync', value: 'sync' },
+    { label: '- Load audios', value: 'load_audios' },
+    { label: '- Plot audios', value: 'plot_audios' },
     { label: '> Cancel', value: 'cancel' },
   ];
 
@@ -59,11 +59,22 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
       return true;
     }
 
-    if (item.value === 'add_guide') return router('add_guide', { twinkle });
-    if (item.value === 'sync') {
-      const updatedTwinkle = await TwinkleManager.loadAudio(twinkle!, (twinkle: Twinkle) =>
-        setTwinkle({ ...twinkle })
-      );
+    if (item.value === 'load_audios') {
+      setLoading(true);
+
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await TwinkleManager.loadAudios(twinkle!, (twinkle: Twinkle) => setTwinkle({ ...twinkle }));
+      setLoading(false);
+      return true;
+    }
+
+    if (item.value === 'plot_audios') {
+      setLoading(true);
+
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await TwinkleManager.plotAudios(twinkle!, (twinkle: Twinkle) => setTwinkle({ ...twinkle }));
+      setLoading(false);
+      return true;
     }
   };
 
@@ -163,7 +174,7 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
                     <Text>{segment.type === 'full' ? '전체' : segment.member}</Text>
                     <Box gap={1}>
                       {segment.videos.map(video => (
-                        <Tag key={video.id} tag={video.tag} />
+                        <Tag key={video.id} tag={video.tag} state={video.state} />
                       ))}
                     </Box>
                   </Box>
