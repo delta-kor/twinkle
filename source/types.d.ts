@@ -56,7 +56,7 @@ type VideoTag =
   | 'single_full'
   | 'single_face';
 
-type VideoState = 'unloaded' | 'loading' | 'waving' | 'loaded' | 'plotted';
+type VideoState = 'unloaded' | 'loading' | 'waving' | 'loaded' | 'plotted' | 'completed';
 
 type SegmentType = 'member' | 'full';
 

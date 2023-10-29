@@ -10,6 +10,7 @@ import Youtube from './youtube.js';
 
 const dataFolder = 'data';
 const audioFolder = path.join(dataFolder, 'audio');
+const beatFolder = path.join(dataFolder, 'beat');
 
 class TwinkleManager {
   public static createTwinkle(artist: Artist, title: string): void {
@@ -142,6 +143,30 @@ class TwinkleManager {
 
       process.on('close', () => resolve());
     });
+  }
+
+  public static async saveBeats(twinkle: Twinkle, beats: any): Promise<void> {
+    for (const beat of beats) {
+      const videoId = beat.id;
+      const video = twinkle.sessions
+        .map(session => session.segments)
+        .flat()
+        .map(segment => segment.videos)
+        .flat()
+        .find(video => video.id === videoId);
+
+      if (!video) continue;
+
+      video.delta = beat.align;
+      if (video.delta !== -1) video.state = 'completed';
+      await TwinkleManager.save(twinkle);
+    }
+
+    const fileData = beats
+      .map((beat: any) => `${beat.id} ${beat.align} ${beat.from} ${beat.paths.join(' ')}`)
+      .join('\n');
+
+    await fs.writeFile(path.join(beatFolder, `${twinkle.id}.twkbeat`), fileData);
   }
 
   private static async save(twinkle: Twinkle): Promise<void> {

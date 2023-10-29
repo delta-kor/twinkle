@@ -2,5 +2,6 @@ node_modules
 dist
 data
 lib
+public
 .vscode
 .env

@@ -1,7 +1,9 @@
 import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
+import open, { apps } from 'open';
 import React, { useEffect, useState } from 'react';
 import Tag from '../components/Tag.js';
+import Editor from '../services/editor.js';
 import TwinkleManager from '../services/twinkle.js';
 
 interface Props {
@@ -35,6 +37,7 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
     { label: '- Reset sessions', value: 'reset_sessions' },
     { label: '- Load audios', value: 'load_audios' },
     { label: '- Plot audios', value: 'plot_audios' },
+    { label: '- Open editor', value: 'open_editor' },
     { label: '> Cancel', value: 'cancel' },
   ];
 
@@ -74,6 +77,24 @@ const TwinklePage: React.FC<Props> = ({ router, state }) => {
       await new Promise(resolve => setTimeout(resolve, 100));
       await TwinkleManager.plotAudios(twinkle!, (twinkle: Twinkle) => setTwinkle({ ...twinkle }));
       setLoading(false);
+      return true;
+    }
+
+    if (item.value === 'open_editor') {
+      if (!twinkle) return false;
+
+      setLoading(true);
+
+      const editor = new Editor(twinkle);
+      editor.open();
+
+      const url = `http://localhost:3000/editor.html?id=${twinkle.id}`;
+      open(url, { app: { name: apps.browser } });
+
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      setLoading(false);
+
       return true;
     }
   };
